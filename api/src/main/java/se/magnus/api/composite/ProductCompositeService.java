@@ -4,12 +4,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import se.magnus.api.core.product.Product;
 
-public interface ProductAggregateService {
+public interface ProductCompositeService {
 
     @GetMapping(
             value = "product-composite/{productId}",
             produces = "application/json"
     )
-     Product getproduct(@PathVariable int productId);
+     ProductAggregate getproduct(@PathVariable int productId);
 
 }

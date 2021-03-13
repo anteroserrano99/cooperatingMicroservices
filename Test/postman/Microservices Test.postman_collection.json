@@ -1,0 +1,57 @@
+{
+	"info": {
+		"_postman_id": "46f707e3-95ad-4672-a0af-fd305ab996e8",
+		"name": "Microservices Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Product  Test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				},
+				"description": "Se prueba el microservicio de producto"
+			},
+			"response": []
+		},
+		{
+			"name": "ProductComposite Service Test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				},
+				"description": "Se prueba el microservicio de producto"
+			},
+			"response": []
+		},
+		{
+			"name": "Review Test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				},
+				"description": "Se prueba el microservicio de producto"
+			},
+			"response": []
+		},
+		{
+			"name": "RecommendationTest",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				},
+				"description": "Se prueba el microservicio de producto"
+			},
+			"response": []
+		}
+	]
+}
