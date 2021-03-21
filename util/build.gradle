@@ -10,10 +10,10 @@ buildscript {
 	}
 }
 
-plugins {
- 	id "io.spring.dependency-management"
-	id 'java'
-}
+
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+
 //'version \'1.0.11.RELEASE\''
 
 

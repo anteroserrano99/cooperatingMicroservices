@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -16,6 +17,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
 import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 
+
+//SWAGGER URL V3
+//http://localhost:7000/swagger-ui/
 @SpringBootApplication
 @ComponentScan("se.magnus")
 public class ProductCompositeServiceApplication {
@@ -39,10 +43,9 @@ public class ProductCompositeServiceApplication {
 
 		return new Docket(SWAGGER_2)
 				.select()
-				.apis(basePackage("se.magnus.microservices.composite.product"))
+				.apis(RequestHandlerSelectors.any())
 				.paths(PathSelectors.any())
 				.build()
-				.globalResponseMessage(GET, emptyList())
 				.apiInfo(new ApiInfo(
 						apiTitle,
 						apiDescription,

@@ -2,7 +2,7 @@ package se.magnus.microservices.core.product.productcompositeservice.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
-import se.magnus.api.composite.*;
+import se.magnus.api.composite.product.*;
 import se.magnus.api.core.product.Product;
 import se.magnus.api.core.recommendation.Recommendation;
 import se.magnus.api.core.review.Review;
@@ -31,7 +31,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
 
     @Override
-    public ProductAggregate getproduct(int productId) {
+    public ProductAggregate getProduct(int productId) {
         Product product = integration.getProduct(productId);
 
         if (product == null) throw new NotFoundException("No product found for productId "+ productId);
@@ -66,7 +66,6 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
         return new ProductAggregate(productId, productName, productWeight, recommendationSummaries, reviewSummaries, serviceAddresses);
     }
-
 
 
 
