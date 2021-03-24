@@ -26,6 +26,15 @@ public class ProductAggregate {
         this.serviceAddresses = serviceAddresses;
     }
 
+    public ProductAggregate() {
+        productId = 0;
+        name = null;
+        weight = 0;
+        recommendations = null;
+        reviews = null;
+        serviceAddresses = null;
+    }
+
     public int getProductId() {
         return productId;
     }
