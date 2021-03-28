@@ -36,6 +36,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProduct(int productId) {
 
+        LOG.debug("Product is been search with productId" + productId);
+
         if (productId < 1) throw new InvalidInputException("Invalid productId: " + productId);
 
         Iterable<ProductEntity> b = productRepository.findAll();

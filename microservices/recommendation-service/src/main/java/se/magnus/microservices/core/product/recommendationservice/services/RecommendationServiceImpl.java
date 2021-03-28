@@ -49,6 +49,8 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         List<Recommendation> recommendations = recommendationMapper.entityListToApiList(recommendationEntities);
 
+        recommendations.forEach(r -> r.setServiceAddress(serviceUtil.getServiceAddress()));
+
         return recommendations;
     }
 

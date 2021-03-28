@@ -18,6 +18,7 @@ public interface ProductService {
 
     @PostMapping(
             value    = "/product",
+            consumes = "application/json",
             produces = "application/json")
     Product createProduct(@RequestBody Product body);
 

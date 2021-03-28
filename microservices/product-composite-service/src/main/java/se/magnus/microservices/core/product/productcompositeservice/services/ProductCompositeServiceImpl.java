@@ -31,24 +31,32 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
 
     @Override
-    public ProductAggregate createCompositeProduct(ProductAggregate body) {
-        Product productObject = new Product(body.getProductId(), body.getName(), body.getWeight(), null);
+    public void createCompositeProduct(ProductAggregate body) {
+        try {
+            Product productObject = new Product(body.getProductId(), body.getName(), body.getWeight(), null);
+            integration.createProduct(productObject);
+            if (body.getRecommendations() != null){
+                body.getRecommendations().forEach(r ->{
 
+                    Recommendation recommendation = new Recommendation(body.getProductId(),
+                            r.getRecommendationId(), r.getAuthor(), r.getRate(), r.getContent(), null
+                            );
+                    integration.createRecommendations(recommendation);
+                } );
 
-        if (body.getRecommendations() != null){
-            body.getRecommendations().forEach(r ->{
+                if (body.getReviews() != null){
+                    body.getReviews().forEach(r ->{
+                        Review review = new Review(body.getProductId(), r.getReviewId(), r.getSubject(), r.getAuthor(), r.getContent(), null);
 
-                Recommendation recommendation = new Recommendation(body.getProductId(),
-                        r.getRecommendationId(), r.getAuthor(), r.getRate(), r.getContent(), null
-                        );
-//                integration.create
+                        integration.createReview(review);
+                    });
+                }
 
-
-            } );
+            }
+        }catch (RuntimeException ex){
+            throw ex;
         }
 
-
-        return null;
     }
 
     @Override
@@ -66,7 +74,9 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     @Override
     public void deleteCompositeProduct(int productId) {
-
+        integration.deleteRecommendations(productId);
+        integration.deleteReviews(productId);
+        integration.deleteProduct(productId);
     }
 
 
@@ -77,12 +87,12 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
         List<RecommendationSummary> recommendationSummaries = (recommendations == null) ? null :
                 recommendations.stream()
-                        .map( r -> new RecommendationSummary(r.getRecommendationId(), r.getAuthor(), r.getRate(), content))
+                        .map( r -> new RecommendationSummary(r.getRecommendationId(), r.getAuthor(), r.getRate(), r.getContent()))
                 .collect(Collectors.toList());
 
         List<ReviewSummary> reviewSummaries = (reviews == null) ? null :
             reviews.stream()
-                    .map(r -> new ReviewSummary(r.getReviewId(), r.getAuthor(), r.getSubject()))
+                    .map(r -> new ReviewSummary(r.getReviewId(), r.getAuthor(), r.getSubject(), r.getContent()))
                     .collect(Collectors.toList());
 
         String productAddress = product.getServiceAddress();

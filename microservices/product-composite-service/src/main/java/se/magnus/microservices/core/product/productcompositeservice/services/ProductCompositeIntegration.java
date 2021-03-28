@@ -63,8 +63,8 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     public Product getProduct(int productId) {
 
         try {
-            String url = productServiceUrl + productId;
-            LOG.debug("Will call getProduct API on URL: {}", url);
+            String url = productServiceUrl + "/" +  productId;
+            LOG.debug("Will call getProduct API on URL: ", url);
 
             Product product = restTemplate.getForObject(url, Product.class);
             LOG.debug("Found a product with id: {}", product.getProductId());
@@ -95,10 +95,9 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         try{
 
         return restTemplate.postForObject(productServiceUrl, body, Product.class);
-        } catch (HttpClientErrorException e){
-
+        } catch (HttpClientErrorException ex){
+            throw new InvalidInputException("No valid Input");
         }
-        return  null;
     }
 
     @Override
@@ -106,25 +105,18 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         try{
 
             restTemplate.delete(productServiceUrl + "/" + productId);
-        } catch (HttpClientErrorException e){
-
+        } catch (HttpClientErrorException ex){
+            throw new InvalidInputException("No valid input for delete", ex);
         }
 
 
     }
 
-    private String getErrorMessage(HttpClientErrorException ex) {
-        try {
-            return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
-        } catch (IOException ioex) {
-            return ex.getMessage();
-        }
-    }
 
     public List<Recommendation> getRecommendations(int productId) {
 
         try {
-            String url = recommendationServiceUrl + productId;
+            String url = recommendationServiceUrl + "?productId=" + productId;
 
             LOG.debug("Will call getRecommendations API on URL: {}", url);
             List<Recommendation> recommendations = restTemplate.exchange(url, GET, null, new ParameterizedTypeReference<List<Recommendation>>() {}).getBody();
@@ -138,10 +130,33 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         }
     }
 
+    @Override
+    public Recommendation createRecommendations(Recommendation body) {
+        try{
+
+            return restTemplate.postForObject(recommendationServiceUrl, body, Recommendation.class);
+        } catch (HttpClientErrorException ex){
+            throw new InvalidInputException("No valid Input");
+        }
+    }
+
+    @Override
+    public void deleteRecommendations(int productId) {
+
+
+        try{
+            String url = recommendationServiceUrl + "?productId=" + productId;
+            restTemplate.delete(url);
+
+        } catch (HttpClientErrorException ex){
+            throw new InvalidInputException("No valid input for delete recommendations", ex);
+        }
+    }
+
     public List<Review> getReviews(int productId) {
 
         try {
-            String url = reviewServiceUrl + productId;
+            String url = reviewServiceUrl + "?productId=" + productId;
 
             LOG.debug("Will call getReviews API on URL: {}", url);
             List<Review> reviews = restTemplate.exchange(url, GET, null, new ParameterizedTypeReference<List<Review>>() {}).getBody();
@@ -152,6 +167,40 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         } catch (Exception ex) {
             LOG.warn("Got an exception while requesting reviews, return zero reviews: {}", ex.getMessage());
             return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public Review createReview(Review body) {
+
+        try{
+        restTemplate.postForObject(reviewServiceUrl, body, Review.class);
+
+        }catch (HttpClientErrorException ex){
+            throw new InvalidInputException("No valid input for creating reivew", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteReviews(int productId) {
+
+        try{
+
+            String url = reviewServiceUrl + "?productId=" + productId;
+        restTemplate.delete(url);
+
+        } catch (HttpClientErrorException ex){
+            throw new InvalidInputException("No valid input for delete reviews", ex);
+        }
+
+    }
+
+    private String getErrorMessage(HttpClientErrorException ex) {
+        try {
+            return mapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
+        } catch (IOException ioex) {
+            return ex.getMessage();
         }
     }
 }
