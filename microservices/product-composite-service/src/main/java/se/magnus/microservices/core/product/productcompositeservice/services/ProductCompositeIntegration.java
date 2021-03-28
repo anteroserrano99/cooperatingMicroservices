@@ -55,9 +55,9 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         this.restTemplate = restTemplate;
         this.mapper = mapper;
 
-        productServiceUrl        = "http://" + productServiceHost + ":" + productServicePort + "/product/";
-        recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation?productId=";
-        reviewServiceUrl         = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review?productId=";
+        productServiceUrl        = "http://" + productServiceHost + ":" + productServicePort + "/product";
+        recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation";
+        reviewServiceUrl         = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review";
     }
 
     public Product getProduct(int productId) {
@@ -87,6 +87,30 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
                     throw ex;
             }
         }
+    }
+
+    @Override
+    public Product createProduct(Product body) {
+
+        try{
+
+        return restTemplate.postForObject(productServiceUrl, body, Product.class);
+        } catch (HttpClientErrorException e){
+
+        }
+        return  null;
+    }
+
+    @Override
+    public void deleteProduct(int productId) {
+        try{
+
+            restTemplate.delete(productServiceUrl + "/" + productId);
+        } catch (HttpClientErrorException e){
+
+        }
+
+
     }
 
     private String getErrorMessage(HttpClientErrorException ex) {

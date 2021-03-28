@@ -38,6 +38,8 @@ public class ProductServiceImpl implements ProductService {
 
         if (productId < 1) throw new InvalidInputException("Invalid productId: " + productId);
 
+        Iterable<ProductEntity> b = productRepository.findAll();
+
         ProductEntity productEntity = productRepository.findByProductId(productId).orElseThrow(() -> new NotFoundException("No product found for productId " + productId));
 
         Product response =  productMapper.entityToApi(productEntity);
@@ -54,9 +56,10 @@ public class ProductServiceImpl implements ProductService {
             ProductEntity newProductEntity = productRepository.save(productEntity);
 
             LOG.debug("createProduct: entity created for productId: {}", body.getProductId());
-            Product response =  productMapper.entityToApi(productEntity);
+            Product response =  productMapper.entityToApi(newProductEntity);
             response.setServiceAddress(serviceUtil.getServiceAddress());
 
+            Iterable<ProductEntity> b = productRepository.findAll();
             return response;
 
         }catch (DuplicateKeyException e){

@@ -99,9 +99,6 @@ public class PersistenceTests {
 
 
 
-
-
-
     @Test
     public void optimisticLockError(){
 

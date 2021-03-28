@@ -1,7 +1,6 @@
 package se.magnus.api.core.recommendation;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,4 +16,18 @@ public interface RecommendationService {
         value    = "/recommendation",
         produces = "application/json")
     List<Recommendation> getRecommendations(@RequestParam(value = "productId", required = true) int productId);
+
+    @PostMapping(
+            value    = "/recommendation",
+            consumes = "application/json",
+            produces = "application/json")
+    Recommendation createRecommendations(@RequestBody Recommendation body);
+
+
+    @DeleteMapping(value    = "/recommendation")
+    void deleteRecommendations(@RequestParam(value = "productId", required = true)int productId);
+
+
+
+
 }
