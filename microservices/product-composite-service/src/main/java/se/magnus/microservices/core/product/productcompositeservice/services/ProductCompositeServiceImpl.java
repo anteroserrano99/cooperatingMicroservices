@@ -1,7 +1,10 @@
 package se.magnus.microservices.core.product.productcompositeservice.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 import se.magnus.api.composite.product.*;
 import se.magnus.api.core.product.Product;
 import se.magnus.api.core.recommendation.Recommendation;
@@ -14,6 +17,11 @@ import java.util.stream.Collectors;
 
 @RestController
 public class ProductCompositeServiceImpl implements ProductCompositeService {
+
+
+    private Logger LOG = LoggerFactory.getLogger(ProductCompositeServiceImpl.class);
+
+
 
     @Autowired
     ServiceUtil serviceUtil;
@@ -46,7 +54,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
                 if (body.getReviews() != null){
                     body.getReviews().forEach(r ->{
-                        Review review = new Review(body.getProductId(), r.getReviewId(), r.getSubject(), r.getAuthor(), r.getContent(), null);
+                        Review review = new Review(body.getProductId(), r.getReviewId(), r.getAuthor(), r.getSubject(), r.getContent(), null);
 
                         integration.createReview(review);
                     });
@@ -60,27 +68,38 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
     }
 
     @Override
-    public ProductAggregate getCompositeProduct(int productId) {
-        Product product = integration.getProduct(productId);
+    public Mono<ProductAggregate> getCompositeProduct(int productId) {
 
-        if (product == null) throw new NotFoundException("No product found for productId "+ productId);
+        return Mono.zip(
+                values -> createAggreateProduct((Product) values[0], (List<Recommendation>) values[1], (List<Review>) values[2], serviceUtil.getServiceAddress() ),
+                integration.getProduct(productId),
+                integration.getRecommendations(productId).collectList(),
+                integration.getReviews(productId).collectList())
+                .doOnError(ex -> LOG.warn("getCompositeProduct failed: {}", ex.toString()))
+                .log();
 
-        List<Recommendation> recommendations = integration.getRecommendations(productId);
-
-        List<Review> reviews = integration.getReviews(productId);
-
-        return createAggreateProduct(product, reviews, recommendations, serviceUtil.getServiceAddress());
     }
 
     @Override
     public void deleteCompositeProduct(int productId) {
+
+        try {
+
+        LOG.debug("deleteCompositeProduct: Deletes a product aggregate for productId: {}", productId);
         integration.deleteRecommendations(productId);
         integration.deleteReviews(productId);
         integration.deleteProduct(productId);
+
+        LOG.debug("deleteCompositeProduct: aggregate entities deleted for productId: {}", productId);
+
+    } catch (RuntimeException re) {
+        LOG.warn("deleteCompositeProduct failed: {}", re.toString());
+        throw re;
+    }
     }
 
 
-    public ProductAggregate createAggreateProduct(Product product, List<Review> reviews, List<Recommendation> recommendations, String serviceAddress){
+    public ProductAggregate createAggreateProduct(Product product, List<Recommendation> recommendations, List<Review> reviews, String serviceAddress){
         int productId = product.getProductId();
         String productName = product.getName();
         int productWeight = product.getWeight();

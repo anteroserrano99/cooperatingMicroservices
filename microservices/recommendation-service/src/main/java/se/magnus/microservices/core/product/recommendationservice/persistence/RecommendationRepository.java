@@ -1,12 +1,14 @@
 package se.magnus.microservices.core.product.recommendationservice.persistence;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface RecommendationRepository extends CrudRepository<RecommendationEntity, String> {
+public interface RecommendationRepository extends ReactiveCrudRepository<RecommendationEntity, String> {
 
-    Optional<List<RecommendationEntity>> findByProductId(int productId);
+    Flux<RecommendationEntity> findByProductId(int productId);
 
 }
