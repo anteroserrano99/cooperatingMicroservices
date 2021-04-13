@@ -5,7 +5,6 @@ spring.data.mongodb:
   host: localhost
   port: 27017
   database: product-db
-  auto-index-creation: true
 
 spring.cloud.stream:
   defaultBinder: rabbit
@@ -37,18 +36,20 @@ spring.rabbitmq:
   username: guest
   password: guest
 
-
 logging:
   level:
     root: INFO
     se.magnus: DEBUG
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "*"
 ---
 spring.profiles: docker
 
-spring.data.mongodb.host: mongodb
-
 server.port: 8080
+
+spring.data.mongodb.host: mongodb
 
 spring.rabbitmq.host: rabbitmq
 

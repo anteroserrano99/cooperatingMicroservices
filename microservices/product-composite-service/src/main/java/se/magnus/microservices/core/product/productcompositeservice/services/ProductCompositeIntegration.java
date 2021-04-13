@@ -68,6 +68,11 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     private final String recommendationServiceUrl;
     private final String reviewServiceUrl;
 
+    private final String productServiceHealthUrl;
+    private final String recommendationServiceHealthUrl;
+    private final String reviewServiceHealthUrl;
+
+
     @Autowired
     public ProductCompositeIntegration(
             WebClient.Builder webClient,
@@ -91,6 +96,11 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         productServiceUrl        = "http://" + productServiceHost + ":" + productServicePort + "/product";
         recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation";
         reviewServiceUrl         = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review";
+
+
+        productServiceHealthUrl = "http://" + productServiceHost + ":" + productServicePort;
+        recommendationServiceHealthUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort;
+        reviewServiceHealthUrl = "http://" + reviewServiceHost + ":" + reviewServicePort;
     }
 
     public Mono<Product> getProduct(int productId) {
@@ -162,7 +172,6 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     @Override
     public void deleteReviews(int productId) {
-
         messageSources.outputReviews().send(MessageBuilder.withPayload(new Event(DELETE, productId, null)).build());
     }
 
@@ -175,15 +184,15 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     }
 
     public Mono<Health> getProductHealth() {
-        return getHealth(productServiceUrl);
+        return getHealth(productServiceHealthUrl);
     }
 
     public Mono<Health> getRecommendationHealth() {
-        return getHealth(recommendationServiceUrl);
+        return getHealth(recommendationServiceHealthUrl);
     }
 
     public Mono<Health> getReviewHealth() {
-        return getHealth(reviewServiceUrl);
+        return getHealth(reviewServiceHealthUrl);
     }
 
     private Mono<Health> getHealth(String url) {

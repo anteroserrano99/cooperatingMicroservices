@@ -25,6 +25,7 @@ import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 
 //SWAGGER URL V3
 //http://localhost:7000/swagger-ui/
+//http://localhost:8080/actuator/health
 @SpringBootApplication
 @ComponentScan("se.magnus")
 public class ProductCompositeServiceApplication {

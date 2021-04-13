@@ -94,6 +94,7 @@ logging:
     root: INFO
     se.magnus: DEBUG
 
+management.health.mongo.enabled: "false"
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
 ---
