@@ -26,8 +26,9 @@ import static se.magnus.api.event.Event.Type.CREATE;
 import static se.magnus.api.event.Event.Type.DELETE;
 
 @SpringBootTest(webEnvironment=RANDOM_PORT, properties = {
-    "spring.datasource.url=jdbc:h2:mem:review-db"})
-
+		"logging.level.se.magnus=DEBUG",
+		"eureka.client.enabled=false",
+		"spring.datasource.url=jdbc:h2:mem:review-db"})
 public class ReviewServiceApplicationTests {
 
 	@Autowired

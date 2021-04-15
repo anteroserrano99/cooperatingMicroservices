@@ -33,6 +33,7 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+#      eureka:
 
   product-composite:
     build: microservices/product-composite-service
@@ -44,6 +45,12 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+
+  eureka:
+    build: spring-cloud/eurekaserver
+    mem_limit: 350m
+    ports:
+      - "8761:8761"
 
 
   # $ mongo
