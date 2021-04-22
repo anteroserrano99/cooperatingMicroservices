@@ -23,7 +23,7 @@ public interface ProductCompositeService {
     @PostMapping(
             value    = "/product-composite",
             consumes = "application/json")
-    void createCompositeProduct(@RequestBody ProductAggregate body);
+    Mono<Void> createCompositeProduct(@RequestBody ProductAggregate body);
 
 
     @ApiOperation(
@@ -50,7 +50,7 @@ public interface ProductCompositeService {
     })
     @DeleteMapping(
             value    = "/product-composite/{productId}")
-    void deleteCompositeProduct(@PathVariable int productId);
+    Mono<Void> deleteCompositeProduct(@PathVariable int productId);
 
 
 }

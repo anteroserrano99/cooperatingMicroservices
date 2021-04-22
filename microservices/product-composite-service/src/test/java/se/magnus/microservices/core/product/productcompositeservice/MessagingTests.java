@@ -33,7 +33,10 @@ import static se.magnus.api.event.Event.Type.CREATE;
 import static se.magnus.api.event.Event.Type.DELETE;
 import static se.magnus.microservices.core.product.productcompositeservice.IsSameEvent.sameEventExceptCreatedAt;
 
-@SpringBootTest(webEnvironment=RANDOM_PORT, properties = {"eureka.client.enabled=false"})
+@SpringBootTest(
+        webEnvironment=RANDOM_PORT,
+        classes = {ProductCompositeServiceApplication.class, TestSecurityConfig.class },
+        properties = {"spring.main.allow-bean-definition-overriding=true","eureka.client.enabled=false"})
 public class MessagingTests {
 
 
