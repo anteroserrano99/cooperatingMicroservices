@@ -4,6 +4,8 @@ services:
   product:
     build: microservices/product-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -17,6 +19,8 @@ services:
   recommendation:
     build: microservices/recommendation-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -30,6 +34,8 @@ services:
   review:
     build: microservices/review-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -44,6 +50,8 @@ services:
   product-composite:
     build: microservices/product-composite-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -53,6 +61,8 @@ services:
         condition: service_healthy
 
   eureka:
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -63,6 +73,8 @@ services:
       - "8761:8761"
 
   gateway:
+    networks:
+      - my-network
     build: spring-cloud/gateway
     environment: 
       - SPRING_PROFILES_ACTIVE=docker
@@ -73,6 +85,8 @@ services:
       - "8443:8443"
 
   auth-server:
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -85,6 +99,8 @@ services:
     mem_limit: 250m
 
   config-server:
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker,native
       - ENCRYPT_KEY=${CONFIG_SERVER_ENCRYPT_KEY}
@@ -97,6 +113,8 @@ services:
 
   # $ mongo
   mongodb:
+    networks:
+      - my-network
     image: mongo:3.6.9
     mem_limit: 250m
     ports:
@@ -110,6 +128,8 @@ services:
 
   # $ mysql -uroot -h127.0.0.1 -p
   mysql:
+    networks:
+      - my-network
     image: mysql:5.7
     mem_limit: 250m
     ports:
@@ -126,6 +146,8 @@ services:
       retries: 10
 
   rabbitmq:
+    networks:
+      - my-network
     image: rabbitmq:3.7.8-management
     mem_limit: 250m
     ports:
@@ -136,3 +158,7 @@ services:
       interval: 20s
       timeout: 5s
       retries: 10
+
+networks:
+  my-network:
+    name: my-network

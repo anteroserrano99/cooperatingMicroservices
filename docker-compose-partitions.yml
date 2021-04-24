@@ -6,6 +6,8 @@ services:
   product:
     build: microservices/product-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -19,6 +21,8 @@ services:
   product-p1:
     build: microservices/product-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -32,6 +36,8 @@ services:
   recommendation:
     build: microservices/recommendation-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -45,6 +51,8 @@ services:
   recommendation-p1:
     build: microservices/recommendation-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -58,6 +66,8 @@ services:
   review:
     build: microservices/review-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_0
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -71,6 +81,8 @@ services:
   review-p1:
     build: microservices/review-service
     mem_limit: 250m
+    networks:
+      - my-network
     environment:
       - SPRING_PROFILES_ACTIVE=docker,streaming_partitioned,streaming_instance_1
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -84,6 +96,8 @@ services:
   product-composite:
     build: microservices/product-composite-service
     mem_limit: 250m
+    networks:
+      - my-network
     ports:
       - "8080:8080"
     environment:
@@ -102,6 +116,8 @@ services:
       - CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     build: spring-cloud/gateway
     mem_limit: 250m
+    networks:
+      - my-network
     ports:
       - "8443:8443"
 
@@ -112,6 +128,8 @@ services:
       - CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     build: spring-cloud/oauth2authorizationserver
     mem_limit: 250m
+    networks:
+      - my-network
 
   eureka:
     environment:
@@ -120,6 +138,8 @@ services:
       - CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     build: spring-cloud/eurekaserver
     mem_limit: 250m
+    networks:
+      - my-network
     ports:
       - "8761:8761"
 
@@ -133,10 +153,14 @@ services:
       - ./config-repo:/config-repo
     build: spring-cloud/configserver
     mem_limit: 250m
+    networks:
+      - my-network
   # $ mongo
   mongodb:
     image: mongo:3.6.9
     mem_limit: 250m
+    networks:
+      - my-network
     ports:
       - "27017:27017"
     command: mongod --smallfiles
@@ -150,6 +174,8 @@ services:
   mysql:
     image: mysql:5.7
     mem_limit: 250m
+    networks:
+      - my-network
     ports:
       - "3306:3306"
     environment:
@@ -166,6 +192,8 @@ services:
   rabbitmq:
     image: rabbitmq:3.7.8-management
     mem_limit: 250m
+    networks:
+      - my-network
     ports:
       - 5672:5672
       - 15672:15672
@@ -174,3 +202,7 @@ services:
       interval: 20s
       timeout: 5s
       retries: 10
+
+networks:
+  my-network:
+    name: my-network

@@ -1,6 +1,8 @@
 package se.magnus.microservices.core.product.productcompositeservice.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import se.magnus.util.http.HttpErrorInfo;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.Duration;
 
 import static reactor.core.publisher.Flux.empty;
 import static se.magnus.api.event.Event.Type.CREATE;
@@ -67,6 +70,8 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     private final ObjectMapper mapper;
 
+    private final int productServiceTimeoutSec;
+
     private final String productServiceUrl = "http://product";
     private final String recommendationServiceUrl = "http://recommendation";
     private final String reviewServiceUrl = "http://review";
@@ -75,16 +80,19 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     public ProductCompositeIntegration(
             WebClient.Builder webClientBuilder,
             ObjectMapper mapper,
-            MessageSources messageSources
+            MessageSources messageSources,
+            @Value("${app.product-service.timeoutSec}") int productServiceTimeoutSec
 
     ) {
 
         this.webClientBuilder = webClientBuilder;
         this.mapper = mapper;
         this.messageSources = messageSources;
+        this.productServiceTimeoutSec = productServiceTimeoutSec;
 
     }
-
+    @Retry(name = "product")
+    @CircuitBreaker(name = "product")
     public Mono<Product> getProduct(int productId, int delay, int faultPercent) {
 
         URI url = UriComponentsBuilder.fromUriString(productServiceUrl + "/product/{productId}?delay={delay}&faultPercent={faultPercent}").build(productId, delay, faultPercent);
@@ -94,7 +102,8 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
                     .retrieve()
                     .bodyToMono(Product.class)
                     .log()
-                    .onErrorMap(WebClientResponseException.class, ex -> handleException(ex));
+                    .onErrorMap(WebClientResponseException.class, ex -> handleException(ex))
+                    .timeout(Duration.ofSeconds(productServiceTimeoutSec));
     }
 
     @Override
