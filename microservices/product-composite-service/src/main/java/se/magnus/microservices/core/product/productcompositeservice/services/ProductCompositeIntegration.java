@@ -13,6 +13,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import se.magnus.api.core.product.Product;
@@ -27,6 +28,7 @@ import se.magnus.util.exceptions.NotFoundException;
 import se.magnus.util.http.HttpErrorInfo;
 
 import java.io.IOException;
+import java.net.URI;
 
 import static reactor.core.publisher.Flux.empty;
 import static se.magnus.api.event.Event.Type.CREATE;
@@ -83,9 +85,9 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     }
 
-    public Mono<Product> getProduct(int productId) {
+    public Mono<Product> getProduct(int productId, int delay, int faultPercent) {
 
-            String url = productServiceUrl + "/product/" +  productId;
+        URI url = UriComponentsBuilder.fromUriString(productServiceUrl + "/product/{productId}?delay={delay}&faultPercent={faultPercent}").build(productId, delay, faultPercent);
             LOG.debug("Will call getProduct API on URL: ", url);
 
             return getWebClient().get().uri(url)
@@ -110,7 +112,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     public Flux<Recommendation> getRecommendations(int productId) {
 
-            String url = recommendationServiceUrl + "/recommendation?productId=" + productId;
+        URI url = UriComponentsBuilder.fromUriString(recommendationServiceUrl + "/recommendation?productId={productId}").build(productId);
 
             return getWebClient().get().uri(url)
                     .retrieve()
@@ -135,7 +137,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     public Flux<Review> getReviews(int productId) {
 
-            String url = reviewServiceUrl + "/review?productId=" + productId;
+        URI url = UriComponentsBuilder.fromUriString(reviewServiceUrl + "/review?productId={productId}").build(productId);
 
             return getWebClient().get().uri(url)
                     .retrieve()

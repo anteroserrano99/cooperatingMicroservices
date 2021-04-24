@@ -20,6 +20,7 @@ public class SecurityConfig {
 			.authorizeExchange()
 				.pathMatchers("/headerrouting/**").permitAll()
 				.pathMatchers("/actuator/**").permitAll()
+				.pathMatchers("/config/**").permitAll()
 				.pathMatchers("/eureka/**").permitAll()
 				.pathMatchers("/oauth/**").permitAll()
 				.anyExchange().authenticated()
