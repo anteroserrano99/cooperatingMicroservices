@@ -3,6 +3,7 @@ version: '2.1'
 services:
   product:
     build: microservices/product-service
+    image: microservices_product-service
     mem_limit: 250m
     networks:
       - my-network
@@ -18,6 +19,7 @@ services:
 
   recommendation:
     build: microservices/recommendation-service
+    image: microservices_recommendation-service
     mem_limit: 250m
     networks:
       - my-network
@@ -33,6 +35,7 @@ services:
 
   review:
     build: microservices/review-service
+    image: microservices_review-service
     mem_limit: 250m
     networks:
       - my-network
@@ -45,10 +48,10 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-#      eureka:
 
   product-composite:
     build: microservices/product-composite-service
+    image: microservices_product-composite-service
     mem_limit: 250m
     networks:
       - my-network
@@ -60,22 +63,11 @@ services:
       rabbitmq:
         condition: service_healthy
 
-  eureka:
-    networks:
-      - my-network
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
-      - CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
-    build: spring-cloud/eurekaserver
-    mem_limit: 250m
-    ports:
-      - "8761:8761"
-
   gateway:
     networks:
       - my-network
     build: spring-cloud/gateway
+    image: microservices_gateway
     environment: 
       - SPRING_PROFILES_ACTIVE=docker
       - CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
@@ -96,6 +88,7 @@ services:
 #    volumes: 
 #      - ./keystore:/keystore  
     build: spring-cloud/oauth2authorizationserver
+    image: microservices_auth-server
     mem_limit: 250m
 
   config-server:

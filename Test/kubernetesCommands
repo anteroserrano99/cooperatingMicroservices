@@ -1,0 +1,23 @@
+minikube start
+
+kubectl create namespace hands-on
+
+kubectl config current-context
+
+kubectl config set-context minikube --namespace=hands-on
+
+
+
+
+
+-----
+CONFIGURACION CREDENCIALES
+kubectl create configmap config-repo --from-file=config-repo --save-config
+
+kubectl create secret generic config-server-secretes --from-literal=ENCRYPT_KEY=my-very-secure-encrypt-key --from-literal=SPRING_SECURITY_USER_NAME=dev-usr --from-literal=SPRING_SECURITY_USER_PASSWORD=dev-pwd --save-config
+
+kubectl create secret generic config-client-credentials --from-literal=CONFIG_SEsRVER_USR=dev-usr --from-literal=CONFIG_SERVER_PWD=dev-pwd --save-config
+
+kubectl apply -k kubernetes/services/overlays/dev
+
+kubectl wait --timeout=600s --for=condition=ready pod --all
