@@ -8,7 +8,7 @@ kubectl config set-context minikube --namespace=hands-on
 
 
 
-
+https://github.com/PacktPublishing/Hands-On-Microservices-with-Spring-Boot-and-Spring-Cloud.git
 
 -----
 CONFIGURACION CREDENCIALES
