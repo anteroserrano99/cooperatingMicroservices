@@ -1,5 +1,5 @@
 bases:
-- ../../base2
+- ../../base
 resources:
 - mongodb-dev.yml
 - rabbitmq-dev.yml

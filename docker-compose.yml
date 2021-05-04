@@ -92,6 +92,7 @@ services:
     mem_limit: 250m
 
   config-server:
+    image: microservices_config-server
     networks:
       - my-network
     environment:

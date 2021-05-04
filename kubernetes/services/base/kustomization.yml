@@ -1,9 +1,9 @@
 resources:
-#- auth-server.yml
-#- config-server.yml
-#- gateway.yml
+- auth-server.yml
+- config-server.yml
+- gateway.yml
 - product-composite.yml
-#- product.yml
-#- recommendation.yml
-#- review.yml
-#- zipkin-server.yml
+- product.yml
+- recommendation.yml
+- review.yml
+- zipkin-server.yml
